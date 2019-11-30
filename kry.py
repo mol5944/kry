@@ -4,6 +4,7 @@ from sys import argv
 from os.path import exists
 from threading import Thread
 from time import sleep
+from re import search
 
 #def
 def help():
@@ -14,6 +15,7 @@ def help():
     print('--sleep_thr (delay between threads)')
     print('--proxy_file (use proxy for scanning)')
     print('--timeout (waiting for a response between requests)')
+    print('--search_title (keyword search)')
     print('--verbose (verbose output)')
     print('--output (report output file)')
     print('--good_code (error code)')
@@ -35,6 +37,11 @@ def request(url,timeout,proxies={}):
         pass
     else:
         if resp.status_code == good_code:
+            if title != None:
+                if search(title,resp.text) == None:
+                    pass
+                else:
+                    return
             if '--verbose' in argv:
                 print(url)
             if output[0]:
@@ -112,6 +119,11 @@ if '--sleep_thr' in argv:
 else:
     sleep_thr = 0
 
+if '--search_title' in argv:
+    title = argv[argv.index('--search_title') +1]
+else:
+    title = None
+
 
 
 
@@ -137,11 +149,11 @@ with open(wordlist,'rt',errors='ignore') as dictionary:
 
                 proxies = {'http':'http://' + proxies, 'https':'https://' + proxies,'socks4':'socks4://' + proxies, 'socks5':'socks5://' + proxies}
                 
-                thr = Thread(target=request, args=(check_url,timeout,proxies,))
+                thr = Thread(target=request, args=(check_url,timeout,proxies,title,))
                 thr.start()
                 count += 1
             else:
-                thr = Thread(target=request, args=(check_url,timeout,))
+                thr = Thread(target=request, args=(check_url,timeout,title))
                 thr.start()
                 count += 1
 
