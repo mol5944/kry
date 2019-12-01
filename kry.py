@@ -30,14 +30,16 @@ def save_url(file_name,url):
     with open(file_name,'at') as file:
         file.write(url + '\n')
 
-def request(url,timeout,proxies={}):
+def request(url,timeout,proxies,title):
     try:
-        resp = requests.get(url,timeout=timeout)
+        resp = requests.get(url,timeout=timeout,proxies=proxies)
     except:
         pass
     else:
-        if resp.text == '' or resp.text == None:
+
+        if resp.text == '':
             return
+
         if resp.status_code == good_code:
             if title != None:
                 if search(title,resp.text) == None:
@@ -106,10 +108,7 @@ else:
 if '--good_code' in argv:
     good_code = int(argv[argv.index('--good_code') + 1])
 else:
-    print('########################################')
-    print('specify the parameter \'--good_code\'')
-    print('########################################')
-    help()
+    good_code = 200
 
 if '--threads' in argv:
     threads = int(argv[argv.index('--threads') + 1])
@@ -149,13 +148,13 @@ with open(wordlist,'rt',errors='ignore') as dictionary:
                 proxies = proxy[count_start_proxy]
                 count_start_proxy += 1
 
-                proxies = {'http':'http://' + proxies, 'https':'https://' + proxies,'socks4':'socks4://' + proxies, 'socks5':'socks5://' + proxies}
+                proxies = {'http':'http://' + proxies, 'https':'https://' + proxies}
                 
                 thr = Thread(target=request, args=(check_url,timeout,proxies,title,))
                 thr.start()
                 count += 1
             else:
-                thr = Thread(target=request, args=(check_url,timeout,title))
+                thr = Thread(target=request, args=(check_url,timeout,None,title,))
                 thr.start()
                 count += 1
 
