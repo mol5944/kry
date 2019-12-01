@@ -36,6 +36,8 @@ def request(url,timeout,proxies={}):
     except:
         pass
     else:
+        if resp.text == '' or resp.text == None:
+            return
         if resp.status_code == good_code:
             if title != None:
                 if search(title,resp.text) == None:
