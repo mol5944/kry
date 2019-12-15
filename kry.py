@@ -32,7 +32,7 @@ def save_url(file_name,url):
 
 def request(url,timeout,proxies,title):
     try:
-        resp = requests.get(url,timeout=timeout,proxies=proxies)
+        resp = requests.get(url,timeout=timeout,proxies=proxies,headers={'User-Agent':'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Ubuntu Chromium/78.0.3904.108 Chrome/78.0.3904.108 Safari/537.36'})
     except:
         pass
     else:
@@ -42,9 +42,7 @@ def request(url,timeout,proxies,title):
 
         if resp.status_code == good_code:
             if title != None:
-                if search(title,resp.text) == None:
-                    pass
-                else:
+                if search(title,resp.text) != None:
                     return
             if '--verbose' in argv:
                 print(url)
