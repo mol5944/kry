@@ -81,6 +81,9 @@ if '--url' in argv:
     except:
         print('could not connect to the site')
         quit()
+
+    if url[-1] == '/':
+        url = url[0:-1]
 else:
     print('########################################')
     print('specify the parameter \'--url\'')
